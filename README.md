@@ -1,6 +1,6 @@
 # MouseBrainRegistration
 
-MouseBrainRegistration 是一个面向小鼠全脑图像配准的 Windows 图形界面打包版本。它把 mBrainAligner 论文中的主要自动化流程封装到 Qt6 界面中，方便用户完成全脑图像预处理、全局配准、局部配准以及配准结果查看。
+MouseBrainRegistration 是一个面向小鼠全脑图像配准的 Windows 图形界面打包版本。它把 mBrainAligner 论文中的部分自动化流程封装到 Qt6 界面中，方便用户完成全脑图像预处理、全局配准、局部配准以及基础结果查看。
 
 本项目主要面向大体积 3D 小鼠脑图像与标准图谱空间之间的配准，例如将实验采集的 whole-brain 图像映射到 Allen Common Coordinate Framework atlas / CCFv3 相关空间中。
 
@@ -35,7 +35,20 @@ run.bat
 3. 自动局部配准：使用 CLM（Coherent Landmark Mapping）进行非线性局部形变配准。
 4. 可选半自动修正：在局部区域进一步检查和微调配准质量。
 
-当前打包版主要提供预处理、全局配准、局部配准、2D/3D 查看和融合显示等界面化操作，具体功能以本程序界面为准。
+当前打包版主要提供预处理、全局配准、局部配准、2D 切片查看和融合显示等界面化操作，具体功能以本程序界面为准。
+
+## Current Status
+
+This project is still under active development. The current packaged version is mainly intended for testing the preprocessing, global registration, local registration, 2D slice viewing, and fixed/result blending workflow.
+
+Known limitations:
+
+- Some UI and menu-bar actions are placeholders or not fully implemented yet.
+- 3D visualization is not fully implemented and may not work reliably in the current release.
+- Manual landmark picking / manual matching-point selection is not fully implemented.
+- Automatic landmark/marker detection for local registration is not implemented. Users need to provide the fixed/target image marker file manually before running local registration.
+- The semi-automatic refinement workflow described in the mBrainAligner paper is not fully available in this GUI package.
+- There may still be bugs in the interface and workflow. Please verify registration results carefully before using them for downstream analysis.
 
 ## Quick Start
 
@@ -44,7 +57,7 @@ run.bat
 3. 在菜单或界面中加载 Moving Image 和 Fixed Image。
 4. 如需要，先点击预处理按钮生成预处理后的 moving 图像。
 5. 点击全局配准按钮，程序会优先使用预处理结果；如果没有预处理结果，也可以直接使用原始 moving 图像进行全局配准。
-6. 全局配准完成后，选择局部配准所需 marker 文件，再点击局部配准。
+6. 全局配准完成后，手动选择局部配准所需的 fixed/target marker 文件，再点击局部配准。当前版本不会自动寻找局部配准标记点。
 7. 在 Data Manager 和 Blend View 中查看 fixed、moving、global/local result 的配准效果。
 
 ## Package Layout
@@ -64,7 +77,13 @@ tools/Stps_warp_image_portable_x64/Stps_warp_image.exe
 ```
 
 程序会以 `MouseBrainRegistration.exe` 所在目录作为运行根目录，并使用相对路径查找 `data/` 和 `tools/`。请不要把 exe 单独移动到其他文件夹中运行。
-data/25um_568提供CCF标准脑，方便您直接配准，C1.v3draw_processed.v3draw为C1严重伪影图像方便您测试条纹伪影预处理，data/25um_pad为dti成像模态鼠脑图像，您可以测试其与CCF配准，注意局部配准请选用模式1
+
+Example data included in the package:
+
+- `data/25um_568/`: CCF standard brain data for direct registration tests.
+- `C1.v3draw_processed.v3draw`: an example image with strong stripe artifacts, useful for testing preprocessing.
+- `data/25umpad/`: DTI-modality mouse brain data for testing registration with CCF.
+- For local registration tests with the included example data, use local registration mode `1`.
 
 ## Main Outputs
 
